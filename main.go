@@ -9,13 +9,21 @@ type Item struct {
 }
 
 func main() {
-	item := inputItem()
-	fmt.Println("===========")
-	fmt.Printf("%s に %d 円使いました", item.Category, item.Price)
-	fmt.Println("===========")
+	var n int
+	fmt.Print("品目数>")
+	fmt.Scan(&n)
+
+	items := make([]Item, 0, n)
+
+	for i := 0; i < cap(items); i++ {
+		items = inputItem(items)
+	}
+
+	showItems(items)
 }
 
-func inputItem() Item {
+// 入力の受付
+func inputItem(items []Item) []Item {
 	var item Item
 
 	fmt.Print("品目>")
@@ -24,5 +32,16 @@ func inputItem() Item {
 	fmt.Print("値段>")
 	fmt.Scan(&item.Price)
 
-	return item
+	items = append(items, item)
+	return items
+}
+
+// 一覧の表示
+func showItems(items []Item) {
+	fmt.Println("===========")
+	// 全ての item を表示
+	for i := 0; i < len(items); i++ {
+		fmt.Printf("%s: %d 円", items[i].Category, items[i].Price)
+	}
+	fmt.Println("===========")
 }
