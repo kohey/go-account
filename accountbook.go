@@ -1,5 +1,10 @@
 package main
 
+import (
+	"fmt"
+	"os"
+)
+
 // Item deals Category and Price
 type Item struct {
 	Category string
@@ -18,6 +23,22 @@ func NewAccountBook(fileName string) *AccountBook {
 
 // AddItem :ファイルに新しい Item を追加する
 func (ab *AccountBook) AddItem(item *Item) error {
+	file, err := os.OpenFile(ab.fileName, os.O_RDONLY|os.O_WRONLY|os.O_RDWR, 0666)
+	if err != nil {
+		return err
+	}
+
+	// 「品目 価格」の順番に記録
+	if _, err := fmt.Fprintln(file, item.Category, item.Price); err != nil {
+		return err
+	}
+
+	// ファイルを閉じる
+	if err := file.Close(); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // GetItems :最近追加したものを limit 分返す
