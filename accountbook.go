@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 )
@@ -43,6 +44,16 @@ func (ab *AccountBook) AddItem(item *Item) error {
 
 // GetItems :最近追加したものを limit 分返す
 func (ab *AccountBook) GetItems(limit int) ([]*Item, error) {
+	file, err := os.Open(ab.fileName)
+	if err != nil {
+		return nil, err
+	}
+
+	// ファイルをスキャン
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+
+	}
 }
 
 // 1行ずつパースする
