@@ -56,7 +56,8 @@ func (ab *AccountBook) GetItems(limit int) ([]*Item, error) {
 	}
 }
 
-// 1行ずつパースする
-func (ab *AccountBook) parseLines(line string, item *Item) error {
+// 1行をパースする
+// パース = 1行を item(実体) に割り当てる
+func (ab *AccountBook) parseLine(line string, item *Item) error {
 
 }
