@@ -41,9 +41,14 @@ func main() {
 	}
 }
 
-// 入力を受け付けて、ファイルに保存する
-func inputItem(file *os.File) error {
+// item に 入力値を紐づけて、返す
+func inputItem(item Item) *Item {
+	fmt.Print("品目>")
+	fmt.Scan(&item.Category)
+	fmt.Print("価格>")
+	fmt.Scan(&item.Price)
 
+	return &item
 }
 
 // Items の一覧を、「〇:〇円」という形で返すだけ
