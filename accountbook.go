@@ -58,14 +58,14 @@ func (ab *AccountBook) GetItems(limit int) ([]*Item, error) {
 	var items []*Item
 	// 1行ずつ読みこむ
 	for scanner.Scan() {
-		var item *Item
+		var item Item
 
-		if err := ab.parseLine(scanner.Text(), item); err != nil {
+		if err := ab.parseLine(scanner.Text(), &item); err != nil {
 			return nil, err
 		}
 
 		// この時点で item に値が紐づけられているので
-		items = append(items, item)
+		items = append(items, &item)
 	}
 
 	// limit より少なかったら、全部返す

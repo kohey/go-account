@@ -35,7 +35,8 @@ LOOP:
 		case 2:
 			var limit int
 			fmt.Println("何件取得しますか？>")
-			fmt.Print(&limit)
+			fmt.Print(">")
+			fmt.Scan(&limit)
 
 			// limit 分の item を取得
 			items, _ := ab.GetItems(limit)
