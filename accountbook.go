@@ -27,7 +27,7 @@ func NewAccountBook(fileName string) *AccountBook {
 
 // AddItem :ファイルに新しい Item を追加する
 func (ab *AccountBook) AddItem(item *Item) error {
-	file, err := os.OpenFile(ab.fileName, os.O_RDONLY|os.O_WRONLY|os.O_RDWR, 0666)
+	file, err := os.OpenFile(ab.fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
 	}
