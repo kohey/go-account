@@ -39,12 +39,17 @@ LOOP:
 			fmt.Scan(&limit)
 
 			// limit 分の item を取得
-			items, _ := ab.GetItems(limit)
+			items, err := ab.GetItems(limit)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, "エラー", err)
+			}
+
 			showItems(items)
 			break LOOP
 		// 終わりたい場合
 		case 3:
-			break LOOP
+			fmt.Println("終了します")
+			return
 		}
 	}
 }
