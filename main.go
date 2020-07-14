@@ -46,7 +46,9 @@ func inputItem(file *os.File) error {
 
 }
 
-// 一覧の表示
-func showItems() error {
-
+// Items の一覧を、「〇:〇円」という形で返すだけ
+func showItems(items []*Item) {
+	for _, item := range items {
+		fmt.Printf("%s: %v", item.Category, item.Price)
+	}
 }
