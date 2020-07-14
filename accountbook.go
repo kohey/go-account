@@ -45,7 +45,7 @@ func (ab *AccountBook) AddItem(item *Item) error {
 	return nil
 }
 
-// GetItems :最近追加したものを limit 分返す
+// GetItems :ファイルに記載してある、最近追加したものを、item に紐付けて、 limit 分返す
 func (ab *AccountBook) GetItems(limit int) ([]*Item, error) {
 	file, err := os.Open(ab.fileName)
 	if err != nil {
@@ -54,9 +54,30 @@ func (ab *AccountBook) GetItems(limit int) ([]*Item, error) {
 
 	// ファイルをスキャン
 	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
 
+	var items []*Item
+	// 1行ずつ読みこむ
+	for scanner.Scan() {
+		var item *Item
+
+		if err := ab.parseLine(scanner.Text(), item); err != nil {
+			return nil, err
+		}
+
+		// この時点で item に値が紐づけられているので
+		items = append(items, item)
 	}
+
+	// limit より少なかったら、全部返す
+	if len(items) < limit {
+		return items, nil
+	}
+
+	// 後方から順番に limit 分取り出し
+	stIndex := len(items) - limit
+	enIndex := len(items)
+
+	return items[stIndex:enIndex], nil
 }
 
 // 1行をパースする
