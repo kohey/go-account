@@ -86,7 +86,7 @@ func (ab *AccountBook) parseLine(line string, item *Item) error {
 	splited := strings.Split(line, " ")
 	// 分割がおかしかったら、終了
 	if len(splited) != 2 {
-		errors.New("parse に失敗しました")
+		return errors.New("parse に失敗しました")
 	}
 
 	category := splited[0]
