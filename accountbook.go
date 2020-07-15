@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"database/sql"
 	"errors"
-	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -43,20 +42,12 @@ func (ab *AccountBook) CreateTable() error {
 	return nil
 }
 
-// AddItem :ファイルに新しい Item を追加する
+// AddItem :items テーブルに新しい Item を追加する
 func (ab *AccountBook) AddItem(item *Item) error {
-	file, err := os.OpenFile(ab.fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	const sql = `INSERT INTO items(category, price)	VALUES(?,?)`
+
+	rows, err := ab.db.Query(sql, item.Category, item.Price)
 	if err != nil {
-		return err
-	}
-
-	// 「品目 価格」の順番に記録
-	if _, err := fmt.Fprintln(file, item.Category, item.Price); err != nil {
-		return err
-	}
-
-	// ファイルを閉じる
-	if err := file.Close(); err != nil {
 		return err
 	}
 
