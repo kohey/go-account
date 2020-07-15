@@ -23,8 +23,24 @@ type AccountBook struct {
 }
 
 // NewAccountBook :新しい AccountBook を作成する
-func NewAccountBook(fileName string) *AccountBook {
-	return &AccountBook{fileName: fileName}
+func NewAccountBook(db *sql.DB) *AccountBook {
+	return &AccountBook{db: db}
+}
+
+// CreateTable :存在しなければ、新しい itemsテーブルを作成
+func (ab *AccountBook) CreateTable() error {
+	const sql = `CREATE TABLE IF NOT EXISTS items
+								id INTEGER PRIMARY KEY,
+								category STRING NOT NULL,
+								price INTEGER NOT NULL
+							`
+	// 実行する sql の準備
+	_, err := ab.db.Exec(sql)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // AddItem :ファイルに新しい Item を追加する
