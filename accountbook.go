@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"database/sql"
 	"errors"
 	"fmt"
 	"os"
@@ -11,13 +12,14 @@ import (
 
 // Item deals Category and Price
 type Item struct {
+	ID       int
 	Category string
 	Price    int
 }
 
 // AccountBook :家計簿の処理を行う型
 type AccountBook struct {
-	fileName string
+	db *sql.DB
 }
 
 // NewAccountBook :新しい AccountBook を作成する
