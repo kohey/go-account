@@ -3,6 +3,7 @@ package main
 import (
 	"html/template"
 	"net/http"
+	"strconv"
 )
 
 // Handlers :http ハンドラーを集めた型
@@ -60,4 +61,44 @@ func (hs *Handlers) ListHander(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
+}
+
+// SaveHandler :保存を行うハンドラ
+func (hs *Handlers) SaveHandler(w http.ResponseWriter, r *http.Request) {
+	// POST Request かどうかを判定
+	if r.Method != "POST" {
+		code := http.StatusMethodNotAllowed
+		http.Error(w, http.StatusText(code), code)
+		return
+	}
+
+	// category のバリデーション
+	if r.FormValue("category") == "" {
+		code := http.StatusBadRequest
+		http.Error(w, "品目が指定されていません", code)
+		return
+	}
+
+	category := r.FormValue("category")
+	price, err := strconv.Atoi(r.FormValue("price"))
+
+	if err != nil {
+		code := http.StatusBadRequest
+		http.Error(w, err.Error(), code)
+		return
+	}
+
+	item := &Item{
+		Category: category,
+		Price:    price,
+	}
+
+	if err := hs.ab.AddItem(item); err != nil {
+		code := http.StatusInternalServerError
+		http.Error(w, err.Error(), code)
+		return
+	}
+
+	http.Redirect(w, r, "/", http.StatusFound)
+
 }
