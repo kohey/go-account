@@ -1,10 +1,8 @@
 package main
 
 import (
-	"bufio"
 	"database/sql"
 	"errors"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -54,39 +52,37 @@ func (ab *AccountBook) AddItem(item *Item) error {
 	return nil
 }
 
-// GetItems :ファイルに記載してある、最近追加したものを、item に紐付けて、 limit 分返す
+// GetItems :DBに最近追加したものを、item に紐付けて、 limit 分返す
 func (ab *AccountBook) GetItems(limit int) ([]*Item, error) {
-	file, err := os.Open(ab.fileName)
+	const sql = `SELECT * FROM items ORDER BY id DESC`
+	rows, err := ab.db.Query(sql)
 	if err != nil {
 		return nil, err
 	}
 
-	// ファイルをスキャン
-	scanner := bufio.NewScanner(file)
-
 	var items []*Item
-	// 1行ずつ読みこむ
-	for scanner.Scan() {
+	defer rows.Close()
+	// 取得したレコードそれぞれについて、item に割り当て
+	// items に追加
+	for rows.Next() {
 		var item Item
-
-		if err := ab.parseLine(scanner.Text(), &item); err != nil {
+		err := rows.Scan(
+			&item.ID,
+			&item.Category,
+			&item.Price,
+		)
+		if err != nil {
 			return nil, err
 		}
-
-		// この時点で item に値が紐づけられているので
 		items = append(items, &item)
 	}
 
-	// limit より少なかったら、全部返す
-	if len(items) < limit {
-		return items, nil
+	// rows.Err: rows.Next のループ中に起きた様々なエラーを取得
+	if err := rows.Err(); err != nil {
+		return nil, err
 	}
 
-	// 後方から順番に limit 分取り出し
-	stIndex := len(items) - limit
-	enIndex := len(items)
-
-	return items[stIndex:enIndex], nil
+	return items, nil
 }
 
 // 1行をパースする
