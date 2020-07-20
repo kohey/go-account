@@ -28,6 +28,7 @@ func main() {
 
 	// handlers の登録
 	http.HandleFunc("/", hs.ListHander)
+	http.HandleFunc("/save", hs.SaveHandler)
 
 	// サーバーの開始
 	fmt.Print(":8080ポートで WebServer を起動中・・・")
