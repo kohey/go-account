@@ -115,8 +115,18 @@ func (ab *AccountBook) GetSummeries() ([]*Summery, error) {
 	return summeries, nil
 }
 
+// Summery :品目ごとにまとめたデータ
 type Summery struct {
 	Category string
 	Count    int
 	Sum      int
+}
+
+// Avg :全品目の平均
+func (s *Summery) Avg() float64 {
+	if s.Count == 0 {
+		return 0
+	}
+
+	return float64(s.Sum) / float64(s.Count)
 }
