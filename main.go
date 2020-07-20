@@ -1,13 +1,22 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"os"
+
+	"github.com/tenntenn/sqlite"
 )
 
 // 入力によって処理を分岐
 func main() {
-	ab := NewAccountBook("accountbook.txt")
+	db, err := sql.Open(sqlite.DriverName, "accountbook.db")
+	if err != nil {
+		// 標準出力に書き出して終了
+		fmt.Fprintln(os.Stderr, "エラー:", err)
+		os.Exit(1)
+	}
+	ab := NewAccountBook(db)
 
 LOOP:
 	for {
