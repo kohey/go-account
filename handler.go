@@ -25,6 +25,14 @@ var listTmpl = template.Must(template.New("list").Parse(`<!DOCTYPE html>
 	</head>
 	<body>
 		<h1>家計簿</h1>
+		<h2>入力</h2>
+		<form method="post" action="/save">
+			<label for="category">品目</label>
+			<input name="category" type="text">
+			<label for="price">値段</label>
+			<input name="price" type="number">
+			<input type="submit" value="保存">
+		</form>
 		<h2>最新{{len .}}件</h2>
 		{{- if . -}}
 		<table border="1">
