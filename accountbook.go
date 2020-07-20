@@ -23,10 +23,10 @@ func NewAccountBook(db *sql.DB) *AccountBook {
 
 // CreateTable :存在しなければ、新しい itemsテーブルを作成
 func (ab *AccountBook) CreateTable() error {
-	const sql = `CREATE TABLE IF NOT EXISTS items
+	const sql = `CREATE TABLE IF NOT EXISTS items(
 								id INTEGER PRIMARY KEY,
 								category STRING NOT NULL,
-								price INTEGER NOT NULL
+								price INTEGER NOT NULL);
 							`
 	// 実行する sql の準備
 	_, err := ab.db.Exec(sql)

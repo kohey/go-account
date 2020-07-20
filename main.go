@@ -13,10 +13,15 @@ func main() {
 	db, err := sql.Open(sqlite.DriverName, "accountbook.db")
 	if err != nil {
 		// 標準出力に書き出して終了
-		fmt.Fprintln(os.Stderr, "エラー:", err)
+		fmt.Fprintln(os.Stderr, "dbオープンエラー:", err)
 		os.Exit(1)
 	}
 	ab := NewAccountBook(db)
+
+	// 存在しなかったらテーブルを作成
+	if err := ab.CreateTable(); err != nil {
+		fmt.Fprintln(os.Stderr, "table 作成エラー", err)
+	}
 
 LOOP:
 	for {
