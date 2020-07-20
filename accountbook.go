@@ -81,3 +81,42 @@ func (ab *AccountBook) GetItems(limit int) ([]*Item, error) {
 
 	return items, nil
 }
+
+// GetSummeries :品目ごとに金額を集計して返す
+func (ab *AccountBook) GetSummeries() ([]*Summery, error) {
+	const sql = `
+	SELECT Category, Count(1) as count, Sum(price) as sum,
+	FROM items
+	GROUY BY Category
+	`
+	rows, err := ab.db.Query(sql)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var summeries []*Summery
+
+	for rows.Next() {
+		var summery Summery
+		rows.Scan(
+			&summery.Category,
+			&summery.Count,
+			&summery.Sum,
+		)
+		summeries = append(summeries, &summery)
+	}
+
+	// ループの終了のハンドリング
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return summeries, nil
+}
+
+type Summery struct {
+	Category string
+	Count    int
+	Sum      int
+}
