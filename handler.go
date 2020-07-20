@@ -30,7 +30,7 @@ var listTmpl = template.Must(template.New("list").Parse(`<!DOCTYPE html>
 		<table border="1">
 			<tr><th>品目</th><th>値段</th></tr>
 			{{- range .}}
-			<tr><td>{{- /* TODO: 品目を埋め込む */ -}}</td><td>{{.Price}}円</td></tr>
+			<tr><td>{{.Category}}</td><td>{{.Price}}円</td></tr>
 			{{- end}}
 		</table>
 		{{- else}}

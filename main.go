@@ -3,7 +3,8 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"os"
+	"log"
+	"net/http"
 
 	"github.com/tenntenn/sqlite"
 )
@@ -12,68 +13,25 @@ import (
 func main() {
 	db, err := sql.Open(sqlite.DriverName, "accountbook.db")
 	if err != nil {
-		// 標準出力に書き出して終了
-		fmt.Fprintln(os.Stderr, "dbオープンエラー:", err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
+	defer db.Close()
 	ab := NewAccountBook(db)
 
-	// 存在しなかったらテーブルを作成
+	// 存在しなければ、テーブルを新規作成
 	if err := ab.CreateTable(); err != nil {
-		fmt.Fprintln(os.Stderr, "table 作成エラー", err)
+		log.Fatal(err)
 	}
 
-LOOP:
-	for {
-		var mode int
-		fmt.Println("[1]入力 [2]最新10件 [3]集計 [4]終了")
-		fmt.Print(">")
-		fmt.Scan(&mode)
+	// handlers の新規作成
+	hs := NewHandlers(ab)
 
-		switch mode {
-		// 新規入力の場合
-		case 1:
-			var n int
-			fmt.Println("何件入力しますか？>")
-			fmt.Print(">")
-			fmt.Scan(&n)
+	// handlers の登録
+	http.HandleFunc("/", hs.ListHander)
 
-			for i := 0; i < n; i++ {
-				var item Item
-				if err := ab.AddItem(inputItem(item)); err != nil {
-					fmt.Fprintln(os.Stderr, "エラー:", err)
-					break LOOP
-				}
-			}
-		// 最新 item の取得の場合
-		case 2:
-			var limit int
-			fmt.Println("何件取得しますか？>")
-			fmt.Print(">")
-			fmt.Scan(&limit)
-
-			// limit 分の item を取得
-			items, err := ab.GetItems(limit)
-			if err != nil {
-				fmt.Fprintln(os.Stderr, "エラー", err)
-				break LOOP
-			}
-
-			showItems(items)
-
-		case 3:
-			summeries, err := ab.GetSummeries()
-			if err != nil {
-				fmt.Fprintln(os.Stderr, "集計エラー", err)
-				break LOOP
-			}
-			showSummery(summeries)
-		// 終わりたい場合
-		case 4:
-			fmt.Println("終了します")
-			return
-		}
-	}
+	// サーバーの開始
+	fmt.Print(":8080ポートで WebServer を起動中・・・")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 // item に 入力値を紐づけて、返す
