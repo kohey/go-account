@@ -24,6 +24,7 @@ rows.Next, rows.Scan, rows.Err, defer rows.Close()
 ## handler について
 これはカメラロールを参照
 ServeHTTP との関係も
+Handler では処理したものをテンプレートに埋め込む処理を書いた
 
 ## 実態への関連付け
 Scan 
