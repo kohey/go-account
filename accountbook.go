@@ -85,9 +85,14 @@ func (ab *AccountBook) GetItems(limit int) ([]*Item, error) {
 // GetSummeries :品目ごとに金額を集計して返す
 func (ab *AccountBook) GetSummeries() ([]*Summery, error) {
 	const sql = `
-	SELECT Category, Count(1) as count, Sum(price) as sum,
-	FROM items
-	GROUY BY Category
+	SELECT
+		category,
+		COUNT(1) as count,
+		SUM(price) as sum
+	FROM
+		items
+	GROUP BY
+		category
 	`
 	rows, err := ab.db.Query(sql)
 	if err != nil {

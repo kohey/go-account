@@ -26,7 +26,7 @@ func main() {
 LOOP:
 	for {
 		var mode int
-		fmt.Println("[1]入力 [2]最新10件 [3]終了")
+		fmt.Println("[1]入力 [2]最新10件 [3]集計 [4]終了")
 		fmt.Print(">")
 		fmt.Scan(&mode)
 
@@ -56,12 +56,20 @@ LOOP:
 			items, err := ab.GetItems(limit)
 			if err != nil {
 				fmt.Fprintln(os.Stderr, "エラー", err)
+				break LOOP
 			}
 
 			showItems(items)
-			break LOOP
-		// 終わりたい場合
+
 		case 3:
+			summeries, err := ab.GetSummeries()
+			if err != nil {
+				fmt.Fprintln(os.Stderr, "集計エラー", err)
+				break LOOP
+			}
+			showSummery(summeries)
+		// 終わりたい場合
+		case 4:
 			fmt.Println("終了します")
 			return
 		}
@@ -82,5 +90,14 @@ func inputItem(item Item) *Item {
 func showItems(items []*Item) {
 	for _, item := range items {
 		fmt.Printf("[%04d]%s:%d円", item.ID, item.Category, item.Price)
+	}
+}
+
+// 集計結果を出力する
+func showSummery(summeries []*Summery) {
+	fmt.Printf("品目\t個数\t合計\t平均\n")
+
+	for _, s := range summeries {
+		fmt.Printf("%s\t%d\t%d円\t%.2f円\n", s.Category, s.Count, s.Sum, s.Avg())
 	}
 }
