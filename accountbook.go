@@ -41,7 +41,7 @@ func (ab *AccountBook) CreateTable() error {
 func (ab *AccountBook) AddItem(item *Item) error {
 	const sql = `INSERT INTO items(category, price)	VALUES(?,?)`
 
-	rows, err := ab.db.Query(sql, item.Category, item.Price)
+	_, err := ab.db.Exec(sql, item.Category, item.Price)
 	if err != nil {
 		return err
 	}
