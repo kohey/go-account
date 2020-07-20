@@ -45,19 +45,3 @@ func inputItem(item Item) *Item {
 
 	return &item
 }
-
-// Items の一覧を返す
-func showItems(items []*Item) {
-	for _, item := range items {
-		fmt.Printf("[%04d]%s:%d円", item.ID, item.Category, item.Price)
-	}
-}
-
-// 集計結果を出力する
-func showSummery(summeries []*Summery) {
-	fmt.Printf("品目\t個数\t合計\t平均\n")
-
-	for _, s := range summeries {
-		fmt.Printf("%s\t%d\t%d円\t%.2f円\n", s.Category, s.Count, s.Sum, s.Avg())
-	}
-}

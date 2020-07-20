@@ -117,7 +117,7 @@ var summaryTmpl = template.Must(template.New("summary").Parse(`<!DOCTYPE html>
 			var data = google.visualization.arrayToDataTable([
 				['品目', '値段'],
 				{{- range . -}}
-				['{{js .Category}}', {{- /* TODO: 合計を埋め込む */ -}}],
+				['{{js .Category}}', {{- .Sum -}}],
 				{{- end -}}
 			]);
 
