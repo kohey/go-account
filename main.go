@@ -78,9 +78,9 @@ func inputItem(item Item) *Item {
 	return &item
 }
 
-// Items の一覧を、「〇:〇円」という形で返すだけ
+// Items の一覧を返す
 func showItems(items []*Item) {
 	for _, item := range items {
-		fmt.Printf("%s: %v", item.Category, item.Price)
+		fmt.Printf("[%04d]%s:%d円", item.ID, item.Category, item.Price)
 	}
 }
